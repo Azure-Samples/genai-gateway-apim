@@ -24,22 +24,22 @@ az deployment group create -f main.bicep -g <Your Resource Group Name>
 
 Set the environment variables in the `.env` file, it should look like this:
 
-    ```bash
-    SUBSCRIPTION_KEY="<Your Subscription Key>"
-    DEPLOYMENT_ID="<Your Deployment ID>"
-    API_VERSION="<Your API Version>"
-    APIM_ENDPOINT="<Your APIM Endpoint>"
-    API_SUFFIX="<Your API Suffix>"
-    ```
+```bash
+SUBSCRIPTION_KEY="<Your Subscription Key>"
+DEPLOYMENT_ID="<Your Deployment ID>"
+API_VERSION="<Your API Version>"
+APIM_ENDPOINT="<Your APIM Endpoint>"
+API_SUFFIX="<Your API Suffix>"
+```
 
 ## -3- Run the project locally
 
     Once you have set the environment variables, you can run the app by running the below commands:
 
-    ```bash
-    npm install
-    npm start
-    ```
+```bash
+npm install
+npm start
+```
 
     This will start the app on `http://localhost:3000` and the API is available at `http:localhost:5000`.
 

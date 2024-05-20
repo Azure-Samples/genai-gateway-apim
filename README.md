@@ -17,10 +17,12 @@ The architecture is set up in the following way:
 - **Managed identity** is used to authenticate the Azure API Management instance to the Azure Open AI instances.
 - **Product and subscriptions**. When you create a product on the Azure API Management instance, you do so to group APIs. You can then create subscriptions to the product to manage access to the APIs.
 
-## -0- Prerequisites
+## Quick Start
 
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-- [Node.js](https://nodejs.org/en/download/)
+### Prerequisites
+
+- Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- Install [Node.js](https://nodejs.org/en/download/)
 
 ## -1- Deploying the project
 
@@ -32,6 +34,32 @@ az account set --subscription <Your Subscription ID>
 az group create -n <Your Resource Group Name> -l <Your Resource Group Location>
 az deployment group create -f main.bicep -g <Your Resource Group Name>
 ```
+
+## -2- Set Environment Variables
+
+Set the environment variables in the `.env` file, it should look like this:
+
+    ```bash
+    SUBSCRIPTION_KEY="<Your Subscription Key>"
+    DEPLOYMENT_ID="<Your Deployment ID>"
+    API_VERSION="<Your API Version>"
+    APIM_ENDPOINT="<Your APIM Endpoint>"
+    API_SUFFIX="<Your API Suffix>"
+    ```
+
+## -3- Run the project locally
+  Once you have set the environment variables, you can run the app by running the below commands:
+
+    ```bash
+    npm install
+    npm start
+    ```
+
+    This will start the app on `http://localhost:3000` and the API is available at `http:localhost:5000`.
+
+## Quick Starts Details
+
+### Resources Created
 
 This should deploy the following cloud resources:
 
@@ -52,7 +80,7 @@ This should deploy the following cloud resources:
         - Circuit breaker
 - 2x Azure Open AI
 
-## -2- Run the project locally
+### ENV Details
 
 To run requests against the APIM endpoint, you need to set some environment variables namely:
 
@@ -67,24 +95,6 @@ To run requests against the APIM endpoint, you need to set some environment vari
 
 To run this locally, you need to provide the below environment variables, you can do this by creating a `.env` file in the root of the project and setting the values there.
 
-- Set the environment variables in the `.env` file, it should look like this:
-
-    ```bash
-    SUBSCRIPTION_KEY="<Your Subscription Key>"
-    DEPLOYMENT_ID="<Your Deployment ID>"
-    API_VERSION="<Your API Version>"
-    APIM_ENDPOINT="<Your APIM Endpoint>"
-    API_SUFFIX="<Your API Suffix>"
-    ```
-
-    Once you have set the environment variables, you can run the app by running the below commands:
-
-    ```bash
-    npm install
-    npm start
-    ```
-
-    This will start the app on `http://localhost:3000` and the API is available at `http:localhost:5000`.
 
 ## What's in this repo
 

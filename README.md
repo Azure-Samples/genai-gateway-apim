@@ -9,7 +9,7 @@ This is a sample project that demonstrates how to use Azure API Management and A
 -  Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Install [Node.js](https://nodejs.org/en/download/)
 
-## -1- Deploying the project
+## 1. Deploying the project
 
 To deploy the project run the following commands:
 
@@ -20,7 +20,7 @@ az group create -n <Your Resource Group Name> -l <Your Resource Group Location>
 az deployment group create -f main.bicep -g <Your Resource Group Name>
 ```
 
-## -2- Set environment variables
+## 2. Set environment variables
 
 Set the environment variables in the `.env` file, it should look like this:
 
@@ -32,16 +32,16 @@ APIM_ENDPOINT="<Your APIM Endpoint>"
 API_SUFFIX="<Your API Suffix>"
 ```
 
-## -3- Run the project locally
+## 3. Run the project locally
 
-    Once you have set the environment variables, you can run the app by running the below commands:
+Once you have set the environment variables, you can run the app by running the below commands:
 
 ```bash
 npm install
 npm start
 ```
 
-    This will start the app on `http://localhost:3000` and the API is available at `http:localhost:5000`.
+This will start the app on `http://localhost:3000` and the API is available at `http:localhost:5000`.
 
 ## What's in this repo
 

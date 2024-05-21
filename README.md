@@ -6,7 +6,7 @@ This is a sample project that demonstrates how to use Azure API Management and A
 
 ### Prerequisites
 
--  Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Install [Node.js](https://nodejs.org/en/download/)
 
 ## 1. Deploying the project

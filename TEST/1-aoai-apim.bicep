@@ -5,12 +5,12 @@
 // - 1 API Management service
 // - 2 role assignments for the API Management service to access the Cognitive Services accounts
 
-
 // parameters
 param publisherName string = 'myPublisherName'
 param publisherEmail string = 'myPublisherEmail@example.com'
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM5'
+var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM6'
+
 
 param openai_first_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI1'
 

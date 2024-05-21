@@ -9,12 +9,13 @@
 param publisherName string = 'myPublisherName'
 param publisherEmail string = 'myPublisherEmail@example.com'
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM6'
+var APIM_NAME = 'APIM3'
 
+var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
 
-param openai_first_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI1'
+var openai_first_endpoint_name = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI1'
 
-param openai_second_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI2'
+var openai_second_endpoint_name = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI2'
 
 // model version: 0613
 param location string = 'eastus2' // resourceGroup().location

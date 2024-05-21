@@ -7,11 +7,13 @@ param apiName string = 'myAPI'
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM4'
+var APIM_NAME = 'APIM4'
 
-param openai_first_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI1'
+var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
 
-param openai_second_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI2'
+var openai_first_endpoint_name = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI1'
+
+var openai_second_endpoint_name = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI2'
 
 // model version: 0613
 param location string = 'eastus2' // resourceGroup().location

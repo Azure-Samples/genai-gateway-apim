@@ -11,7 +11,9 @@
 
 param location string = 'eastus2'
 
-param serviceName string = 'servicewiu65klfbzao6-APIM3'
+var APIM_NAME = 'APIM3'
+
+var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
 
 param apiName string = 'myAPI'
 

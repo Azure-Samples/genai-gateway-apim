@@ -5,11 +5,13 @@
 //  - 1 backend with circuit breaker policy, tied to cog service account 1
 //  - 1 backend with circuit breaker policy, tied to cog service account 2 
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM6'
+var APIM_NAME = 'APIM3'
 
-var cognitiveServicesAccountName1 = '${uniqueString(resourceGroup().id)}-AOAI1'
+var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
 
-var cognitiveServicesAccountName2 = '${uniqueString(resourceGroup().id)}-AOAI2'
+var cognitiveServicesAccountName1 = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI1'
+
+var cognitiveServicesAccountName2 = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI2'
 
 // add the policies
 resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' existing = {

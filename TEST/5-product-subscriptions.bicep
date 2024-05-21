@@ -4,7 +4,11 @@
 // - 1 user
 // - 1 subscription
 
-param serviceName string = 'servicewiu65klfbzao6-APIM3'
+
+var APIM_NAME = 'APIM3'
+
+var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
+
 param apiName string = 'myAPI'
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'

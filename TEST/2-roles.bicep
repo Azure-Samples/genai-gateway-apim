@@ -2,11 +2,13 @@
 // - An API Management service
 // - An Azure Cognitive Services account
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM6'
+var APIM_NAME = 'APIM3'
 
-var cognitiveServicesAccountName1 = '${uniqueString(resourceGroup().id)}-AOAI1'
+var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
 
-var cognitiveServicesAccountName2 = '${uniqueString(resourceGroup().id)}-AOAI2'
+var cognitiveServicesAccountName1 = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI1'
+
+var cognitiveServicesAccountName2 = '${uniqueString(resourceGroup().id)}-${APIM_NAME}-AOAI2'
 
 resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' existing = {
   name: serviceName

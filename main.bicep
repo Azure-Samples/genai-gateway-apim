@@ -7,7 +7,7 @@ param apiName string = 'myAPI'
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'
 
-var APIM_NAME = 'APIM4'
+var APIM_NAME = 'APIM8'
 
 var serviceName = 'service${uniqueString(resourceGroup().id)}-${APIM_NAME}'
 
@@ -133,7 +133,7 @@ param roleDefinitionId string = '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
 // - principalId (APIM service instance) 
 // - scope (Cognitive Services account)
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(apimService.id, roleDefinitionId)
+  name: guid(cognitiveServicesAccount1.id, resourceGroup().id, APIM_NAME)
   scope: cognitiveServicesAccount1
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
@@ -147,7 +147,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
 // - principalId (APIM service instance)
 // - scope (Cognitive Services account)
 resource roleAssignment2 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(apimService.id, roleDefinitionId)
+  name: guid(cognitiveServicesAccount2.id, resourceGroup().id, APIM_NAME)
   scope: cognitiveServicesAccount2
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)

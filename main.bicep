@@ -7,7 +7,7 @@ param apiName string = 'myAPI'
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM3'
+var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM4'
 
 param openai_first_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI1'
 
@@ -105,11 +105,11 @@ resource cognitiveServicesAccountDeployment2 'Microsoft.CognitiveServices/accoun
 
 // Create API Management service
 // NOTE: certain features are only available in certain regions, e.g 'westcentralus' for example until this is GA
-resource apimService 'Microsoft.ApiManagement/service@2020-06-01-preview' = {
+resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' = {
   name: serviceName
-  location: 'westcentralus'
+  location: 'southcentralus'
   sku: {
-    name: 'Standard' 
+    name: 'StandardV2' 
     capacity: 1
   }
   properties: {
@@ -160,7 +160,7 @@ param resourceGroupName string = resourceGroup().name
 // 3 - POLICIES
 
 // Creating a backend for Cog service account 1, also adding a circuit breaker rule
-resource backend1 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' = {
+resource backend1 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
   name: 'backend1'
   properties: {
@@ -191,7 +191,7 @@ resource backend1 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' 
  }
 
 // Creating a backend for Cog service account 2, also adding a circuit breaker rule
-resource backend2 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' = {
+resource backend2 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
   name: 'backend2'
   properties: {
@@ -224,7 +224,7 @@ resource backend2 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' 
 var subscriptionId = az.subscription().subscriptionId
 
 // Create a load balancer (pool) for the backends where backend1 and backend2 are added
-resource loadBalancing 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' = {
+resource loadBalancing 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
   name: 'LoadBalancer'
   properties: {

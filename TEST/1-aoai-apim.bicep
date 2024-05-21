@@ -10,7 +10,7 @@
 param publisherName string = 'myPublisherName'
 param publisherEmail string = 'myPublisherEmail@example.com'
 
-var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM3'
+var serviceName = 'service${uniqueString(resourceGroup().id)}-APIM5'
 
 param openai_first_endpoint_name string = '${uniqueString(resourceGroup().id)}-AOAI1'
 
@@ -112,11 +112,11 @@ resource cognitiveServicesAccountDeployment2 'Microsoft.CognitiveServices/accoun
 
 // create API Management service
 
-resource apimService 'Microsoft.ApiManagement/service@2020-06-01-preview' = {
+resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' = {
   name: serviceName
-  location: 'westcentralus'
+  location: 'southcentralus'
   sku: {
-    name: 'Standard' // TODO, SKU2?
+    name: 'StandardV2' // TODO, SKU2?
     capacity: 1
   }
   properties: {

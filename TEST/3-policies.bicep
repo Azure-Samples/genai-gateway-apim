@@ -5,10 +5,10 @@
 //  - 1 backend with circuit breaker policy, tied to cog service account 1
 //  - 1 backend with circuit breaker policy, tied to cog service account 2 
 
-param serviceName string = 'servicewiu65klfbzao6-APIM3'
+param serviceName string = 'servicewiu65klfbzao6-APIM5'
 
 // add the policies
-resource apimService 'Microsoft.ApiManagement/service@2020-06-01-preview' existing = {
+resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' existing = {
   name: serviceName
 }
 
@@ -23,7 +23,7 @@ resource cognitiveServicesAccount2 'Microsoft.CognitiveServices/accounts@2021-04
 param resourceGroupName string = resourceGroup().name
 
 // POLICY1/BACKEND: create a backend that wires up "circuit breaker policy" to the Cognitive Services account
-resource backend1 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' = {
+resource backend1 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
   name: 'backend1'
   properties: {
@@ -54,7 +54,7 @@ resource backend1 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' 
  }
 
  // POLICY/BACKEND: create a backend that wires up "circuit breaker policy" to the Cognitive Services account
-resource backend2 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' = {
+resource backend2 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
   name: 'backend2'
   properties: {
@@ -87,14 +87,12 @@ resource backend2 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' 
  var subscriptionId = az.subscription().subscriptionId
 
 // POLICY, load balancing
-resource loadBalancing 'Microsoft.ApiManagement/service/backends@2023-05-01-preview' = {
+resource loadBalancing 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
   name: 'LoadBalancer'
   properties: {
     description: 'Load balancer for multiple backends'
     type: 'Pool'
-    // protocol: 'http' // TODO, maybe not required
-    // url: 'https://example.com' // TODO, maybe not required
     pool: {
       services: [
         {

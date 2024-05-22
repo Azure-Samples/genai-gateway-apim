@@ -28,11 +28,11 @@ az bicep install
 
 ### Deploy
 
-> NOTE: make sure you've run `azd auth login` to login to Azure before proceeding below.
 
 To deploy the project run the following commands:
 
 ```bash
+azd auth login
 azd up
 ```
 

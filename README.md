@@ -28,11 +28,15 @@ az bicep install
 
 ### Deploy
 
+> NOTE: make sure you've run `azd auth login` to login to Azure before proceeding below.
+
 To deploy the project run the following commands:
 
 ```bash
 azd up
 ```
+
+> NOTE: when you're asked for `environmentName`, it can be any string of your choosing, for example "APIM" as it serves as a prefix for naming resources in your deployment.
 
 ## Inspect environment variables (no action here)
 
@@ -68,6 +72,19 @@ npm start
 ```
 
 This will start the app on `http://localhost:3000` and the API is available at `http:localhost:1337`.
+
+## Deprovisioning
+
+To remove all deployed resources, run the following command:
+
+```bash
+az down --purge
+```
+
+The preceding command removes all provisoned resources. The `--purge` hard deletes all resources.
+
+> NOTE: some resources on Azure are only soft deleted for performance reasons and can be retrieved. BY using `--purge` resources are hard deleted and cannot be retrieved.
+
 
 ## What's in this repo
 

@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/search';
+const API_URL = 'http://localhost:1337/search';
 const sendButton = document.getElementById('sendButton');
 const inputBox = document.getElementById('inputBox');
 const responseArea = document.getElementById('responseArea');

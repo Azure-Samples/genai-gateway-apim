@@ -1,7 +1,7 @@
 // express api, should a POST route "search" that takes a message and returns a response
 let express = require('express');
 let cors = require('cors');
-let port = process.env.PORT || 5000;
+let port = process.env.PORT || 1337;
 let apiService = require('./apiService');
 
 const { message } = require('statuses');

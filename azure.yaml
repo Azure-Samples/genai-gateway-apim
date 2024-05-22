@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: genai-gateway-apim
+metadata:
+  template: genai-gateway-apim@1.0.0
+
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: azd env get-values > src/.env
+    posix:
+      shell: sh
+      run: azd env get-values > src/.env

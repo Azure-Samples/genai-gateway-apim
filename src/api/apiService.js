@@ -25,7 +25,6 @@ module.exports = {
             return fetch(URL_CHAT, {
                 method: "POST",
                 headers: {
-                    "Ocp-Apim-Subscription-Key": process.env.SUBSCRIPTION_KEY,
                     "api-key": process.env.SUBSCRIPTION_KEY,
                     "Content-Type": "application/json"
                 },

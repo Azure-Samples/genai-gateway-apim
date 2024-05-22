@@ -34,32 +34,28 @@ To deploy the project run the following commands:
 azd up
 ```
 
-## 2. Set environment variables
+## Inspect environment variables (no action here)
 
-To run requests against the APIM endpoint, you need to create an `.env` file and set some environment variables.
+A `.env` file has been generated for you that enables you to runthis project locally. Here's what it consist of:
 
-1. Create the file .env in `src/.env`.
+```bash
+SUBSCRIPTION_KEY="<Your Subscription Key>"
+DEPLOYMENT_ID="<Your Deployment ID>"
+API_VERSION="<Your API Version>"
+APIM_ENDPOINT="<Your APIM Endpoint>"
+API_SUFFIX="<Your API Suffix>"
+```
 
-1. Set the environment variables in the `.env` file, it should look like this:
-
-    ```bash
-    SUBSCRIPTION_KEY="<Your Subscription Key>"
-    DEPLOYMENT_ID="<Your Deployment ID>"
-    API_VERSION="<Your API Version>"
-    APIM_ENDPOINT="<Your APIM Endpoint>"
-    API_SUFFIX="<Your API Suffix>"
-    ```
-
-    **See below how to find the values in Azure Portal:**
+**See below how to find the values in Azure Portal:**
 
     
-    |Value  |Instruction  |
-    |---------|---------|
-    |SUBSCRIPTION_KEY     | Navigate to portal.azure.com -> Select rg -> select APIM instance -> Go to APIs/Subscriptions -> Click show/hide keys on first row (Built-in all-access) -> copy Primary key        |
-    | DEPLOYMENT_ID | Navigate to portal.azure.com -> Select rg -> Select 1st OpenAI instance -> Go to Resource Management/Mode deployments -> Click on Manage Deployments to open Azure AI Studio -> Copy Deployment name |
-    | API_VERSION | Navigate to <https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions>, Copy most recent Supported versions = 2024-02-01 |
-    | APIM_ENDPOINT | Navigate to portal.azure.com -> Select rg -> Select APIM instance -> Go to Overview -> Copy Gateway URL |
-    | API_SUFFIX | Navigate to portal.azure.com -> Select rg -> Select APIM instance -> Navigate to APIs/APIs -> open myAPI -> Go to settings -> Copy API URL suffix |
+|Value  |Instruction  |
+|---------|---------|
+|SUBSCRIPTION_KEY     | Navigate to portal.azure.com -> Select rg -> select APIM instance -> Go to APIs/Subscriptions -> Click show/hide keys on first row (Built-in all-access) -> copy Primary key        |
+| DEPLOYMENT_ID | Navigate to portal.azure.com -> Select rg -> Select 1st OpenAI instance -> Go to Resource Management/Mode deployments -> Click on Manage Deployments to open Azure AI Studio -> Copy Deployment name |
+| API_VERSION | Navigate to <https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions>, Copy most recent Supported versions = 2024-02-01 |
+| APIM_ENDPOINT | Navigate to portal.azure.com -> Select rg -> Select APIM instance -> Go to Overview -> Copy Gateway URL |
+| API_SUFFIX | Navigate to portal.azure.com -> Select rg -> Select APIM instance -> Navigate to APIs/APIs -> open myAPI -> Go to settings -> Copy API URL suffix |
 
 ## 3. Run the project locally
 

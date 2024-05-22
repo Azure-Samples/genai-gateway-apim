@@ -31,7 +31,7 @@ az bicep install
 To deploy the project run the following commands:
 
 ```bash
-az deployment group create -f main.bicep -g <Your Resource Group Name>
+azd up
 ```
 
 ## 2. Set environment variables
@@ -66,9 +66,9 @@ To run requests against the APIM endpoint, you need to create an `.env` file and
 Once you have set the environment variables, you can run the app by running the below commands:
 
 ```bash
-npm install --prefix src
-PORT=1337 
-npm start --prefix src
+cd src
+npm i
+npm start
 ```
 
 This will start the app on `http://localhost:3000` and the API is available at `http:localhost:1337`.

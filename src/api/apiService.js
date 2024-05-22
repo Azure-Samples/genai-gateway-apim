@@ -26,6 +26,7 @@ module.exports = {
                 method: "POST",
                 headers: {
                     "Ocp-Apim-Subscription-Key": process.env.SUBSCRIPTION_KEY,
+                    "api-key": process.env.SUBSCRIPTION_KEY,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(body)
@@ -61,6 +62,7 @@ module.exports = {
             method: "POST",
             headers: {
                 "Ocp-Apim-Subscription-Key": process.env.SUBSCRIPTION_KEY,
+                "api-key": process.env.SUBSCRIPTION_KEY,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)

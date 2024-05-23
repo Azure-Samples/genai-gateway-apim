@@ -108,6 +108,9 @@ module openAi2 'core/ai/cognitiveservices.bicep' = {
 module apim 'core/gateway/apim.bicep' = {
   name: 'apim'
   scope: resourceGroup
+  dependsOn: [
+    openAi1, openAi2
+  ]
   params: {
     name: '${abbrs.apiManagementService}${resourceToken}-${apimName}'
     location: apimLocation
@@ -123,6 +126,9 @@ module apim 'core/gateway/apim.bicep' = {
 module api 'app/apim-api.bicep' = {
   name: 'api'
   scope: resourceGroup
+  dependsOn: [
+    apim, openAi1, openAi2
+  ]
   params: {
     name: apim.outputs.apimServiceName
     applicationInsightsName: monitoring.outputs.applicationInsightsName
@@ -156,6 +162,9 @@ module monitoring 'core/monitor/monitoring.bicep' = {
 module openAi1RoleApim 'core/security/role.bicep' = {
   scope: resourceGroup
   name: 'openai1-role-apim'
+  dependsOn: [
+    apim, openAi1
+  ]
   params: {
     principalId: apim.outputs.apimPrincipalId
     // Cognitive Services OpenAI User
@@ -171,6 +180,9 @@ module openAi1RoleApim 'core/security/role.bicep' = {
 module openAi2RoleApim 'core/security/role.bicep' = {
   scope: resourceGroup
   name: 'openai2-role-apim'
+  dependsOn: [
+    apim, openAi2
+  ]
   params: {
     principalId: apim.outputs.apimPrincipalId
     // Cognitive Services OpenAI User

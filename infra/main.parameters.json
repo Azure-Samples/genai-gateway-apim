@@ -21,7 +21,7 @@
         "value": "${AZURE_OPENAI_API_VERSION=2024-02-01}"
       },
       "apimLocation": {
-        "value": "${AZURE_APIM_LOCATION=southcentralus}"
+        "value": "${AZURE_APIM_LOCATION}"
       }
     }
   }

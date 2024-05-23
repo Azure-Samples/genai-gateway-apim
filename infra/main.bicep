@@ -179,10 +179,6 @@ module openAi2RoleApim 'core/security/role.bicep' = {
   }
 }
 
-output AZURE_LOCATION string = location
-output AZURE_TENANT_ID string = tenant().tenantId
-output AZURE_RESOURCE_GROUP string = resourceGroup.name
-
 output DEPLOYMENT_ID string = 'conversation-model'
 output API_VERSION string = openAiApiVersion
 output APIM_ENDPOINT string = 'https://${apim.outputs.apimServiceName}.azure-api.net'

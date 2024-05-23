@@ -23,14 +23,15 @@ Deploy the project to Azure by running the following command:
 azd up
 ```
 
-> NOTE: You'll be asked to select:
-> - An environment name. You can enter any value you'd like. For example: "apim-genai". The value serves as a prefix for naming resources in your deployment.
-> - The Azure subscription to use.
-> - An Azure location.
+You'll be asked to select:
+- An environment name. For example, `apim-genai`. This value serves as a prefix for naming resources in your deployment.
+- An Azure subscription.
+- An Azure location.
+- An `apimLocation`. Enter a value of `koreacentral`. The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview#supported-regions).
 
 ### Inspect environment variables
 
-After running the `azd up` command, an environment file will be generated for you at `src/.env`. Here's what's in the auto-generated file:
+After running the `azd up` command, an environment file will be generated for you at `src/.env`. Here's some of the key information added to the `.env` file.
 
 ```bash
 SUBSCRIPTION_KEY="<Your Subscription Key>"
@@ -42,7 +43,7 @@ API_SUFFIX="<Your API Suffix>"
 
 **Finding values using the Azure portal:**
 
-If you'd like to find the values in the `.env` yourself, you can follow these steps:
+If you'd like to find the values in the `.env` yourself, follow these steps:
     
 |Value  |Instruction  |
 |---------|---------|

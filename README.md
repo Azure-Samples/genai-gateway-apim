@@ -1,4 +1,4 @@
-# Azure APIM Azure Open AI sample
+# Azure API Management (APIM) - Azure Open AI Sample
 
 This sample project demonstrates how to use Azure API Management and Azure OpenAI to create a simple chatbot.
 
@@ -6,10 +6,10 @@ This sample project demonstrates how to use Azure API Management and Azure OpenA
 
 ### Prerequisites
 
-- Install [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
+- Install [Azure Developer CLI (azd)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 - Install [Node.js](https://nodejs.org/en/download/)
 
-## 1. Deploying the project
+### 1. Deploying the project
 
 Run the following command to login to `azd`:
 
@@ -34,11 +34,11 @@ You'll be asked to select:
 After running the `azd up` command, an environment file will be generated for you at `src/.env`. Here's some of the key information added to the `.env` file.
 
 ```bash
-SUBSCRIPTION_KEY="<Your Subscription Key>"
-DEPLOYMENT_ID="<Your Deployment ID>"
-API_VERSION="<Your API Version>"
 APIM_ENDPOINT="<Your APIM Endpoint>"
 API_SUFFIX="<Your API Suffix>"
+API_VERSION="<Your API Version>"
+DEPLOYMENT_ID="<Your Deployment Name>"
+SUBSCRIPTION_KEY="<Your Subscription Key>"
 ```
 
 **Finding values using the Azure portal:**
@@ -47,11 +47,15 @@ If you'd like to find the values in the `.env` yourself, follow these steps:
     
 |Value  |Instruction  |
 |---------|---------|
-|SUBSCRIPTION_KEY     | Navigate to portal.azure.com -> Select rg -> select APIM instance -> Go to APIs/Subscriptions -> Click show/hide keys on first row (Built-in all-access) -> copy Primary key        |
-| DEPLOYMENT_ID | Navigate to portal.azure.com -> Select rg -> Select 1st OpenAI instance -> Go to Resource Management/Mode deployments -> Click on Manage Deployments to open Azure AI Studio -> Copy Deployment name |
-| API_VERSION | Navigate to <https://learn.microsoft.com/azure/ai-services/openai/reference#completions>, Copy most recent Supported versions = 2024-02-01 |
 | APIM_ENDPOINT | Navigate to portal.azure.com -> Select rg -> Select APIM instance -> Go to Overview -> Copy Gateway URL |
 | API_SUFFIX | Navigate to portal.azure.com -> Select rg -> Select APIM instance -> Navigate to APIs/APIs -> open myAPI -> Go to settings -> Copy API URL suffix |
+| API_VERSION | Navigate to <https://learn.microsoft.com/azure/ai-services/openai/reference#completions>, Copy most recent Supported versions = 2024-02-01 |
+| DEPLOYMENT_ID | Navigate to portal.azure.com -> Select rg -> Select 1st OpenAI instance -> Go to Resource Management/Mode deployments -> Click on Manage Deployments to open Azure AI Studio -> Copy Deployment name |
+|SUBSCRIPTION_KEY     | Navigate to portal.azure.com -> Select rg -> select APIM instance -> Go to APIs/Subscriptions -> Click show/hide keys on first row (Built-in all-access) -> copy Primary key        |
+
+
+
+
 
 ## 2. Run the project locally
 

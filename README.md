@@ -1,4 +1,4 @@
-# Azure API Management (APIM) - Azure Open AI Sample
+# Azure API Management (APIM) - Azure OpenAI Sample
 
 This sample project demonstrates how to use Azure API Management and Azure OpenAI to create a simple chatbot.
 

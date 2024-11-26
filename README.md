@@ -66,7 +66,7 @@ You can run this template virtually by using GitHub Codespaces. The button will 
     - An `apimLocation`
 
     > [!NOTE]
-    > Enter a value of `koreacentral`. The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview?WT.mc_id=javascript-155817-juliamuiruri#supported-regions).
+> Enter a value of `koreacentral`. The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview?WT.mc_id=javascript-155817-juliamuiruri#supported-regions).
 
 1. Start the app.
 
@@ -96,8 +96,7 @@ You need to install [VS Code](https://code.visualstudio.com/?WT.mc_id=javascript
     - An `apimLocation`
 
     > [!NOTE]
-    > Enter a value of `koreacentral`.
-    > The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview?WT.mc_id=javascript-155817-juliamuiruri#supported-regions).
+> Enter a value of `koreacentral`. The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview?WT.mc_id=javascript-155817-juliamuiruri#supported-regions).
 
 1. Install dependencies and start the app.
 

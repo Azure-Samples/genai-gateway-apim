@@ -30,7 +30,7 @@ This sample demonstrates how to build and manage a scalable AI application using
 
 ## Architecture
 
-<img src="./architecture.jpg" alt="Screenshot showing the app's architecture" width="640px" />
+<img src="./architecture.jpg" alt="Screenshot showing the app's architecture" />
 
 The architecture is set up in the following way:
 

@@ -5,7 +5,7 @@
 [![Open project in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?style=flat-square&logo=github)](https://codespaces.new/Azure-Samples/genai-gateway-apim?hide_repo_select=true&ref=main&quickstart=true)
 [![License](https://img.shields.io/badge/License-MIT-pink?style=flat-square)](LICENSE)
 
-This sample shows how to [manage Generative AI APIs at scale using Azure API Management and Azure OpenAI Service](https://learn.microsoft.com/en-us/training/modules/api-management/) for a simple chatbot.
+This sample shows how to [manage Generative AI APIs at scale using Azure API Management and Azure OpenAI Service](https://learn.microsoft.com/training/modules/api-management/?WT.mc_id=javascript-155817-juliamuiruri) for a simple chatbot.
 
 (Like and fork this sample to receive lastest changes and updates)
 
@@ -30,7 +30,7 @@ This sample demonstrates how to build and manage a scalable AI application using
 
 ## Architecture
 
-<img src="./architecture.png" alt="Screenshot showing the app's architecture" width="640px" />
+<img src="./architecture.jpg" alt="Screenshot showing the app's architecture" width="640px" />
 
 The architecture is set up in the following way:
 
@@ -45,7 +45,7 @@ The documentation for this project is available in the [DOC.md](./DOC.md) file.
 
 ## Getting Started
 
-You have a few options for getting started with this template. The quickest way to get started is [GitHub Codespaces](#github-codespaces), since it will setup all the tools for you, but you can also [set it up locally](#local-environment). You can also use a [VS Code dev container](#vs-code-dev-containers)
+You have a few options for getting started with this template. The quickest way to get started is [GitHub Codespaces](#using-github-codespaces), since it will setup all the tools for you, but you can also [set it up locally](#running-locally). You can also use a [VS Code dev container](#using-vs-code-dev-container)
 
 ### Using GitHub Codespaces
 
@@ -64,10 +64,9 @@ You can run this template virtually by using GitHub Codespaces. The button will 
     - An _Azure subscription_
     - An _Azure location_
     - An `apimLocation`
-    
+
     > [!NOTE]
-    > Enter a value of `koreacentral`. 
-    > The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview#supported-regions).
+    > Enter a value of `koreacentral`. The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview?WT.mc_id=javascript-155817-juliamuiruri#supported-regions).
 
 1. Start the app.
 
@@ -79,7 +78,7 @@ You can run this template virtually by using GitHub Codespaces. The button will 
 
 A related option is VS Code Dev Containers, which will open the project in your local VS Code using the Dev Containers extension
 
-You need to install [VS Code](https://code.visualstudio.com/), [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+You need to install [VS Code](https://code.visualstudio.com/?WT.mc_id=javascript-155817-juliamuiruri), [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers&WT.mc_id=javascript-155817-juliamuiruri) and [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 1. Start Docker Desktop
 1. Open the project (this may take several minutes to build the container)
@@ -95,10 +94,10 @@ You need to install [VS Code](https://code.visualstudio.com/), [Dev Containers e
     - An _Azure subscription_
     - An _Azure location_
     - An `apimLocation`
-    
+
     > [!NOTE]
-    > Enter a value of `koreacentral`. 
-    > The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview#supported-regions).
+    > Enter a value of `koreacentral`.
+    > The new API Management SKUv2 tier is used in this demo which is supported in the [following regions](https://learn.microsoft.com/azure/api-management/v2-service-tiers-overview?WT.mc_id=javascript-155817-juliamuiruri#supported-regions).
 
 1. Install dependencies and start the app.
 
@@ -107,14 +106,14 @@ You need to install [VS Code](https://code.visualstudio.com/), [Dev Containers e
     npm install
     npm start
     ```
-This will start the app on http://localhost:3000 and the API is available at http:localhost:1337.
+This will start the app on http://localhost:3000 and the API is available at http://localhost:1337
 
 ### Running Locally
 
 #### Prerequisites
 
-- [VS Code](https://code.visualstudio.com/)
-- [Azure Developer CLI (azd)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
+- [VS Code](https://code.visualstudio.com/?WT.mc_id=javascript-155817-juliamuiruri)
+- [Azure Developer CLI (azd)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?WT.mc_id=javascript-155817-juliamuiruri)
 - [Node.js](https://nodejs.org/)
 
 Then you can get the project code:
@@ -130,15 +129,15 @@ Then you can get the project code:
     npm start
     ```
 
-This will start the app on http://localhost:3000 and the API is available at http:localhost:1337.
+This will start the app on http://localhost:3000 and the API is available at http://localhost:1337
 
 ## Guidance
 
 ### Region Availability and Quota
 
-- Azure OpenAI Service is available in [specific regions](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits#regional-quota-limits)
-- Request [quota](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits#quotas-and-limits-reference) increases if needed through Azure Portal
-- API Management service tier v2 is currently available in [limited regions](https://learn.microsoft.com/en-us/azure/api-management/api-management-region-availability)
+- Azure OpenAI Service is available in [specific regions](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits?WT.mc_id=javascript-155817-juliamuiruri#regional-quota-limits)
+- Request [quota](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits?WT.mc_id=javascript-155817-juliamuiruri#quotas-and-limits-reference) increases if needed through Azure Portal
+- API Management service tier v2 is currently available in [limited regions](https://learn.microsoft.com/azure/api-management/api-management-region-availability?WT.mc_id=javascript-155817-juliamuiruri)
   - We recommend using `koreacentral` for this sample
 
 ### Cost Considerations
@@ -152,8 +151,8 @@ This will start the app on http://localhost:3000 and the API is available at htt
 - Use managed identities for service-to-service authentication
 - Enable APIM policies for rate limiting and circuit breaking
 - Follow least-privilege access principles
-- Monitor API usage and implement alerting. 
-  - You can use the [Azure pricing calculator](https://azure.com/e/bf51ef20b57a4da08e47511938ad5415) to get an estimate.
+- Monitor API usage and implement alerting.
+  - You can use the [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator/?WT.mc_id=javascript-155817-juliamuiruri) to get an estimate.
 
 > [!WARNING]
 > To avoid unnecessary costs, remember to take down your app if it's no longer in use, either by deleting the resource group in the Portal or running `azd down --purge`.
@@ -191,10 +190,9 @@ Once you're done, you can remove all deployed resources using `azd down --purge`
 
 ## Resources
 
-- [Manage your Gen AI APIs with Azure API Management Module](https://learn.microsoft.com/en-us/training/modules/api-management/)
-- [Azure API Management Documentation](https://learn.microsoft.com/azure/api-management/)
-- [Azure OpenAI Service Documentation](https://learn.microsoft.com/azure/ai-services/openai/)
-- [Azure Developer CLI Documentation](https://learn.microsoft.com/azure/developer/azure-developer-cli/)
+- [Manage your Gen AI APIs with Azure API Management Module](https://learn.microsoft.com/training/modules/api-management?WT.mc_id=javascript-155817-juliamuiruri)
+- [Azure API Management Documentation](https://learn.microsoft.com/azure/api-management/?WT.mc_id=javascript-155817-juliamuiruri)
+- [Azure OpenAI Service Documentation](https://learn.microsoft.com/azure/ai-services/openai/?WT.mc_id=javascript-155817-juliamuiruri)
 
 ## Troubleshooting
 

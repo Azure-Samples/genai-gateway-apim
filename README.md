@@ -20,7 +20,7 @@ This sample shows how to [manage Generative AI APIs at scale using Azure API Man
 [![License](https://img.shields.io/badge/📜%20License-blue?style=flat-square)](LICENSE)
 [![Give us a star](https://img.shields.io/badge/⭐%20Give%20us%20a%20star-blue?style=flat-square)](https://github.com/Azure-Samples/genai-gateway-apim/stargazers)
 
-  <img src="./apim.png" alt="Screenshot showing the app in action" width="640px" />
+  <img src="./apim.jpg" alt="Screenshot showing the app in action" width="640px" />
 
 </div>
 

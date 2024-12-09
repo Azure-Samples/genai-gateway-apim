@@ -1,33 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
     <link rel="stylesheet" href="app.css">
-
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <!-- show apimAzure.svg -->
-            <svg width="100" height="100">
-                <image href="apim-Azure.svg" width="100" height="100" />
-            </svg>
-            <p class="chat-text">Start chatting</p>
-            <p class="description">
-                This chatbot is configured to answer your questions
-            </p>
-        </div>
-        <div id="responseArea" >
-        </div>
-       
-        <div class="input" >
-            <textarea id="inputBox" class="textarea" placeholder="Type a new question"></textarea>
-            <svg>
-                <image id="sendButton" href="apim-Send.svg"/>
-            <span>&nbsp;<span>
-           
-        </div>
-    </div>
-    <div id="spinner">Loading...</div>
+    <header class="header">
+        <img src="apim-Azure.svg" alt="Icon" class="icon">
+        <h1 class="title">API Management + Azure OpenAI</h1>
+    </header>
+    <main class="chat-container">
+        <div id="chat" class="chat">
+            <!-- Chat messages will go here -->
+          </div>
+          <div class="input-container">
+            <input type="text" id="inputBox" class="chat-input" placeholder="Type a new question ...">
+            <button id="sendButton" class="send-btn">Send</button>
+          </div>
+    </main>
+    <div id="spinner" class="spinner" style="display: none;">Loading...</div>
     <script src="app.js"></script>
 </body>
 </html>

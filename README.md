@@ -24,6 +24,129 @@ This sample shows how to [manage Generative AI APIs at scale using Azure API Man
 
 </div>
 
+---
+
+## Fork notes — recon test target
+
+This fork of `Azure-Samples/genai-gateway-apim` is used as a **second test
+target** for the `recon` AI compliance test runner
+(`../agenticaifrmwk_recon/`). It deploys CS integration **pattern (a)** —
+AOAI built-in RAI filter (`Microsoft.Default`) with **no** APIM
+`llm-content-safety` policy, **no** Content Safety resource, and **no**
+middleware function. Complements the ailz-dev landing zone (pattern (d)
+middleware-fronted) on the same recon test cases.
+
+### What changed vs upstream
+
+| Concern | Upstream | This fork |
+|---|---|---|
+| Model | `gpt-35-turbo` `0125` (retired 2025-11-14) | `gpt-4.1-mini` `2025-04-14` |
+| AOAI region | `eastus2` | `westeurope` |
+| APIM region | `koreacentral` | `westeurope` |
+| AOAI API version | `2024-02-01` | `2024-10-21` |
+
+Files touched: `infra/main.bicep` (model name/version, both deployments),
+`infra/main.parameters.json` (defaults), `src/api/apiService.js` (cosmetic
+model field for the chat test app).
+
+> The lower part of this README (regions, model names in screenshots, the
+> "use koreacentral" note) is upstream and **stale** relative to this fork.
+> Treat this section as authoritative.
+
+### Prerequisites (Mac, one-time)
+
+```bash
+brew tap azure/azd && brew install azd azure-cli
+az login
+az account set --subscription "<sub-name-or-id>"
+azd auth login
+```
+
+### Deploy
+
+```bash
+cd /Users/petrlenz/Desktop/development/aidev/genai-gateway-apim-01
+
+azd init                     # first time on this machine; pick "Use code in current directory"
+                             # env name suggestion: recon-target-we
+
+azd provision --preview      # dry run, optional
+azd up                       # ~25-40 min for APIM StandardV2 first provision
+```
+
+### Extract values recon needs
+
+`infra/main.bicep:182-190` outputs everything. Pull them:
+
+```bash
+APIM_ENDPOINT=$(azd env get-value APIM_ENDPOINT)
+API_SUFFIX=$(azd env get-value API_SUFFIX)
+DEPLOYMENT_ID=$(azd env get-value DEPLOYMENT_ID)
+API_VERSION=$(azd env get-value API_VERSION)
+SUBSCRIPTION_KEY=$(azd env get-value SUBSCRIPTION_KEY)
+
+# verify
+echo "endpoint: $APIM_ENDPOINT/$API_SUFFIX/deployments/$DEPLOYMENT_ID/chat/completions?api-version=$API_VERSION"
+echo "key length: ${#SUBSCRIPTION_KEY}"   # ~32 chars
+
+# smoke test
+curl -sS -X POST \
+  "$APIM_ENDPOINT/$API_SUFFIX/deployments/$DEPLOYMENT_ID/chat/completions?api-version=$API_VERSION" \
+  -H "api-key: $SUBSCRIPTION_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"ping"}],"max_tokens":10}' | head -50
+```
+
+`azd env get-values` (plural) prints all `KEY="value"` pairs; useful for
+sourcing or eyeballing.
+
+### Run recon against this target
+
+```bash
+cd /Users/petrlenz/Desktop/development/aidev/agenticaifrmwk_recon
+make install                 # one-time
+source .venv/bin/activate
+make refresh-bundle          # pull latest test cases from sibling KB
+
+export RECON_API_KEY="$SUBSCRIPTION_KEY"
+
+recon run \
+  --endpoint "$APIM_ENDPOINT/$API_SUFFIX/deployments/$DEPLOYMENT_ID/chat/completions?api-version=$API_VERSION" \
+  --auth-header api-key \
+  --auth-env RECON_API_KEY \
+  --model gpt-4.1-mini \
+  --mitigations LLM01-011,LLM01-013,LLM04-012
+```
+
+Exit codes: `0` all pass · `1` any fail · `2` `RECON_API_KEY` unset.
+
+### Cross-check with Log Analytics
+
+The deployment includes workspace-based App Insights + LAW. After a recon
+run, in the portal's Log Analytics workspace → Logs:
+
+```kql
+ApiManagementGatewayLogs
+| where TimeGenerated > ago(1h)
+| where ApiId == "myAPI"
+| project TimeGenerated, OperationName, ResponseCode, BackendResponseCode, TotalTime
+| order by TimeGenerated desc
+```
+
+Useful when recon's verdict surprises you — confirms whether the backend
+actually returned what APIM relayed.
+
+### Teardown (saves StandardV2 cost)
+
+```bash
+cd /Users/petrlenz/Desktop/development/aidev/genai-gateway-apim-01
+azd down --purge --force
+```
+
+`--purge` hard-deletes AOAI/KV soft-delete entries so names can be reused.
+
+---
+
 ## Features
 
 This sample demonstrates how to build and manage a scalable AI application using Azure API Management (APIM) and Azure OpenAI Service. The sample includes a chat interface that sends messages through APIM to load-balanced Azure OpenAI endpoints, showcasing enterprise-grade API management for AI workloads.

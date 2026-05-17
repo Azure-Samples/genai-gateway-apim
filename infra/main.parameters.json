@@ -15,13 +15,13 @@
       "value": "${AZURE_PRINCIPAL_ID}"
     },
     "openAiLocation": {
-      "value": "${AZURE_OPENAI_LOCATION=eastus2}"
+      "value": "${AZURE_OPENAI_LOCATION=westeurope}"
     },
     "openAiApiVersion": {
-      "value": "${AZURE_OPENAI_API_VERSION=2024-02-01}"
+      "value": "${AZURE_OPENAI_API_VERSION=2024-10-21}"
     },
     "apimLocation": {
-      "value": "${AZURE_APIM_LOCATION=koreacentral}"
+      "value": "${AZURE_APIM_LOCATION=westeurope}"
     }
   }
 }

@@ -14,7 +14,7 @@ module.exports = {
         let headers = null;
 
         let body = {
-            "model":"gpt-35-turbo","messages":[
+            "model":"gpt-4.1-mini","messages":[
                 {
                     "role":"system","content":"You're a helpful assistant"
                 },

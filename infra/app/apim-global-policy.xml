@@ -1,0 +1,14 @@
+<policies>
+  <inbound>
+    <set-query-parameter name="api-version" exists-action="skip">
+      <value>2024-10-21</value>
+    </set-query-parameter>
+  </inbound>
+  <backend>
+    <forward-request />
+  </backend>
+  <outbound>
+  </outbound>
+  <on-error>
+  </on-error>
+</policies>

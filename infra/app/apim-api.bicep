@@ -154,6 +154,52 @@ resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2020-06-01-pre
   }
 }
 
+// All-APIs (service-level) policy: adds a default `api-version` query param to
+// the request before it's forwarded to the AOAI backend. Paired with the
+// operation overrides below, which drop `?api-version={api-version}` from the
+// imported URL templates so route matching no longer requires it from callers.
+resource globalPolicy 'Microsoft.ApiManagement/service/policies@2023-09-01-preview' = {
+  parent: apimService
+  name: 'policy'
+  properties: {
+    format: 'rawxml'
+    value: loadTextContent('./apim-global-policy.xml')
+  }
+}
+
+// Operation URL template overrides for AOAI data-plane passthrough endpoints.
+// The upstream OpenAPI declares every operation as `?api-version={api-version}`,
+// which makes the query param required for APIM operation matching — callers
+// without it get a 404 before any policy runs. Re-declaring these operations
+// with `parent: api1` makes Bicep apply after the OpenAPI import and overwrite
+// the URL template to drop the query param.
+var deploymentOps = [
+  { name: 'ChatCompletions_Create',   path: 'chat/completions',     displayName: 'Creates a completion for the chat message' }
+  { name: 'Completions_Create',       path: 'completions',          displayName: 'Creates a completion for the provided prompt' }
+  { name: 'embeddings_create',        path: 'embeddings',           displayName: 'Return the embeddings for a given prompt' }
+  { name: 'ImageGenerations_Create',  path: 'images/generations',   displayName: 'Generates a batch of images from a text caption' }
+  { name: 'Speech_Create',            path: 'audio/speech',         displayName: 'Generates audio from the input text' }
+  { name: 'Transcriptions_Create',    path: 'audio/transcriptions', displayName: 'Transcribes audio into the input language' }
+  { name: 'Translations_Create',      path: 'audio/translations',   displayName: 'Transcribes and translates input audio into English text' }
+]
+
+resource deploymentOpOverrides 'Microsoft.ApiManagement/service/apis/operations@2023-09-01-preview' = [for op in deploymentOps: {
+  parent: api1
+  name: op.name
+  properties: {
+    displayName: op.displayName
+    method: 'POST'
+    urlTemplate: '/deployments/{deployment-id}/${op.path}'
+    templateParameters: [
+      {
+        name: 'deployment-id'
+        required: true
+        type: 'string'
+      }
+    ]
+  }
+}]
+
 // Creating a product for the API. Products are used to group APIs and apply policies to them
 resource product 'Microsoft.ApiManagement/service/products@2020-06-01-preview' = {
   parent: apimService

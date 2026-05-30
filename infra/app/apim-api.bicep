@@ -142,7 +142,7 @@ resource api1 'Microsoft.ApiManagement/service/apis@2020-06-01-preview' = {
 // - `azure-openai-token-limit` policy to limit the number of requests to the API
 // - `azure-openai-emit-token-metric` policy to emit a metric with the token
 // - `set-header` policy to add the managed identity token to the request
-var headerPolicyXml = format(loadTextContent('./apim-api-policy.xml'), loadBalancing.name, 5000)
+var headerPolicyXml = format(loadTextContent('./apim-api-policy.xml'), loadBalancing.name, 20000)
 
 // Create a policy for the API, using the headerPolicyXml variable
 resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2020-06-01-preview' = {

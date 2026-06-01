@@ -28,6 +28,9 @@ param skuCount int = 0
 @description('Azure Application Insights Name')
 param applicationInsightsName string
 
+@description('Log Analytics workspace resource ID. If empty, no diagnostic setting is created.')
+param logAnalyticsWorkspaceId string = ''
+
 resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' = {
   name: name
   location: location
@@ -78,6 +81,22 @@ resource apimLogger 'Microsoft.ApiManagement/service/loggers@2021-12-01-preview'
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightsName)) {
   name: applicationInsightsName
+}
+
+resource apimDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
+  name: 'apim-to-log-analytics'
+  scope: apimService
+  properties: {
+    workspaceId: logAnalyticsWorkspaceId
+    logAnalyticsDestinationType: 'Dedicated'
+    logs: [
+      { category: 'GatewayLogs', enabled: true }
+      { category: 'WebSocketConnectionLogs', enabled: true }
+    ]
+    metrics: [
+      { category: 'AllMetrics', enabled: true }
+    ]
+  }
 }
 
 output apimServiceName string = apimService.name

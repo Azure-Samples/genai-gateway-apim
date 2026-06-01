@@ -22,6 +22,9 @@
     },
     "apimLocation": {
       "value": "${AZURE_APIM_LOCATION=westeurope}"
+    },
+    "deployTwoBackends": {
+      "value": false
     }
   }
 }

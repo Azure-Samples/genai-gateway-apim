@@ -9,7 +9,10 @@ param apiName string
 param applicationInsightsName string
 
 param openai1Endpoint string
-param openai2Endpoint string
+param openai2Endpoint string = ''
+
+@description('When true, also creates backend2 and includes it in the load-balancer pool. When false, the pool contains only backend1.')
+param deployTwoBackends bool = true
 
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'
@@ -59,8 +62,8 @@ resource backend1 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' 
    }
  }
 
-// Creating a backend for Cog service account 2, also adding a circuit breaker rule
-resource backend2 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
+// Creating a backend for Cog service account 2, also adding a circuit breaker rule (only when deployTwoBackends)
+resource backend2 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = if (deployTwoBackends) {
   parent: apimService
   name: 'backend2'
   properties: {
@@ -99,12 +102,16 @@ resource loadBalancing 'Microsoft.ApiManagement/service/backends@2023-09-01-prev
     description: 'Load balancer for multiple backends'
     type: 'Pool'
     pool: {
-      services: [
+      services: deployTwoBackends ? [
         {
           id: '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${apimService.name}/backends/${backend1.id}'
         }
         {
           id: '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${apimService.name}/backends/${backend2.id}'
+        }
+      ] : [
+        {
+          id: '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${apimService.name}/backends/${backend1.id}'
         }
       ]
     }

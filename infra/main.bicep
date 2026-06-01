@@ -32,6 +32,9 @@ param productDescription string = 'A product with AI APIs'
 
 param apimName string = 'APIM8'
 
+@description('When true, deploys two AOAI accounts behind an APIM load-balancer pool. When false, deploys only one AOAI account (the pool still exists but contains a single backend).')
+param deployTwoBackends bool = true
+
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
@@ -73,8 +76,8 @@ module openAi1 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
-// SECOND: creating Azure Cognitive Services account for OpenAI
-module openAi2 'core/ai/cognitiveservices.bicep' = {
+// SECOND: creating Azure Cognitive Services account for OpenAI (only when deployTwoBackends)
+module openAi2 'core/ai/cognitiveservices.bicep' = if (deployTwoBackends) {
   name: 'openai2'
   scope: resourceGroup
   params: {
@@ -117,6 +120,7 @@ module apim 'core/gateway/apim.bicep' = {
     publisherEmail: publisherEmail
     publisherName: publisherName
     applicationInsightsName: monitoring.outputs.applicationInsightsName
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -129,8 +133,9 @@ module api 'app/apim-api.bicep' = {
     apiName: apiName
     productName: productName
     productDescription: productDescription
+    deployTwoBackends: deployTwoBackends
     openai1Endpoint: openAi1.outputs.endpoint
-    openai2Endpoint: openAi2.outputs.endpoint
+    openai2Endpoint: deployTwoBackends ? openAi2.outputs.endpoint : ''
   }
 }
 
@@ -168,7 +173,7 @@ module openAi1RoleApim 'core/security/role.bicep' = {
 // - roleDefinitionId (Cognitive Service User), 
 // - principalId (APIM service instance) 
 // - scope (Cognitive Services account)
-module openAi2RoleApim 'core/security/role.bicep' = {
+module openAi2RoleApim 'core/security/role.bicep' = if (deployTwoBackends) {
   scope: resourceGroup
   name: 'openai2-role-apim'
   params: {

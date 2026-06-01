@@ -1,3 +1,9 @@
 etc
 node_modules
 .env
+
+# macOS
+.DS_Store
+
+# Local Claude Code project state
+.claude/

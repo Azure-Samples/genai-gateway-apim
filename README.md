@@ -74,6 +74,21 @@ azd provision --preview      # dry run, optional
 azd up                       # ~25-40 min for APIM StandardV2 first provision
 ```
 
+### Check/fix/remove env
+```bash
+azd env list
+azd env get-values
+
+azd env select <environment-name>
+
+azd env new <new-environment-name>
+azd up
+
+rm -rf .azure
+azd init
+
+```
+
 ### Extract values recon needs
 
 `infra/main.bicep:182-190` outputs everything. Pull them:
@@ -95,6 +110,15 @@ curl -sS -X POST \
   -H "api-key: $SUBSCRIPTION_KEY" \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"ping"}],"max_tokens":10}' | head -50
+
+# smoke test — missing api-version (verifies the gateway defaults it).
+# Should also return HTTP 200; if it 404s with `{"statusCode":404,...}`,
+# the operation overrides in infra/app/apim-api.bicep didn't apply.
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" -X POST \
+  "$APIM_ENDPOINT/$API_SUFFIX/deployments/$DEPLOYMENT_ID/chat/completions" \
+  -H "api-key: $SUBSCRIPTION_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"ping"}],"max_tokens":10}'
 ```
 
 `azd env get-values` (plural) prints all `KEY="value"` pairs; useful for

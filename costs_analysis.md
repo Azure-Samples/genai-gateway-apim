@@ -114,6 +114,96 @@ AppRequests
 " -o table
 ```
 
+<!-- 03e3bed6 - 03062026 -->
+
+## Investigating a specific run window
+
+The recipes above answer "what's the total" and "who hit us." This section
+answers "why did *that one run* take so long / cost so much / hit a limit."
+Three queries you can't easily get from the totals view: when the burst
+actually started/ended, whether the TPM cap engaged at peak, and whether the
+client was serial or parallel.
+
+### Window finder (hourly histogram)
+
+Bracket the actual run boundaries before doing anything else — wider windows
+pollute averages with idle time, narrower ones miss the tail. Scan a couple of
+days around when you think the run happened:
+
+```bash
+az monitor log-analytics query --workspace "$WS_ID" --analytics-query "
+AppRequests
+| where TimeGenerated between (datetime(2026-06-01T00:00:00Z) .. datetime(2026-06-03T12:00:00Z))
+| summarize requests=count() by bin(TimeGenerated, 1h)
+| order by TimeGenerated asc
+" -o table
+```
+
+Read as a histogram: contiguous non-zero hours = the run window. Use those
+exact bounds as `<start>` / `<end>` below.
+
+### Peak per-minute token throughput (did the TPM cap engage?)
+
+`azure-openai-token-limit` evaluates a **rolling 1-minute** counter. A
+window-average TPM is misleading — what matters is the worst minute. Check
+peak + percentiles against the cap (20,000 TPM, formatted into
+`infra/app/apim-api.bicep:152`):
+
+```bash
+az monitor log-analytics query --workspace "$WS_ID" --analytics-query "
+AppMetrics
+| where TimeGenerated between (datetime(<start>) .. datetime(<end>))
+| where Name == 'Total Tokens'
+| summarize tpm=sum(Sum) by bin(TimeGenerated, 1m)
+| summarize p50=round(percentile(tpm,50),0),
+            p95=round(percentile(tpm,95),0),
+            p99=round(percentile(tpm,99),0),
+            max=max(tpm),
+            minutes_observed=count()
+" -o table
+```
+
+- `max << cap` → policy never engaged; status breakdown should show 0 × 429
+- `max ≈ cap` → throttling likely; cross-check status codes
+- Cap is enforced per-subscription-key; if multiple keys share the gateway,
+  also group by `Subscription ID` from `Properties`
+
+### Concurrency (req/min distribution)
+
+Tells you whether wall-clock duration is driven by serial client pacing or by
+genuine backend slowness:
+
+```bash
+az monitor log-analytics query --workspace "$WS_ID" --analytics-query "
+AppRequests
+| where TimeGenerated between (datetime(<start>) .. datetime(<end>))
+| summarize requests=count() by bin(TimeGenerated, 1m)
+| summarize avg_rpm=round(avg(requests),1),
+            p50_rpm=round(percentile(requests,50),1),
+            p95_rpm=round(percentile(requests,95),1),
+            max_rpm=max(requests)
+" -o table
+```
+
+Cross-check with avg latency from the per-operation breakdown above:
+- `requests × avg_latency ≈ wall_clock` → client is essentially serial;
+  parallelism is the lever, not the gateway
+- `requests × avg_latency << wall_clock` → client gappy/throttled by itself
+- `requests × avg_latency >> wall_clock` → high concurrency; gateway / model
+  is the lever
+
+### Diagnostic frame
+
+Answer "why did run X take so long" by walking these six in order:
+
+1. **Window** — from the hourly histogram, exact start/end and total wall-h.
+2. **Volume + health** — request count, status-code split (200 / 4xx / 429 / 5xx).
+3. **Per-call latency** — avg / p95 / max from the per-operation query.
+4. **Throughput vs cap** — peak TPM vs the 20k cap (engaged or headroom?).
+5. **Concurrency** — avg / p95 / max req/min (serial or parallel?).
+6. **Math check** — `requests × avg_latency` should ≈ wall clock under low
+   concurrency; if it does, workload shape (not infra) is the cause.
+
 ## Cost estimate (token-based)
 
 gpt-4.1-mini Standard, published rates as of late 2025 — **verify on the

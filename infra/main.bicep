@@ -37,7 +37,18 @@ param deployTwoBackends bool = true
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
-var tags = { 'azd-env-name': environmentName }
+// Tagging schema for Azure Cost Management — applies to every resource via
+// the `tags` param threaded through every module.
+//   cs-integration-pattern: a/b/c/d per cs-integration-patterns.html.
+//                           Lets Cost Analysis group spend by integration pattern.
+//   recon-role:             distinguishes recon test targets (reference-deployment)
+//                           from real workloads (production-landing-zone, etc.).
+// Cost Management aggregates new tag dimensions on an 8-24h delay.
+var tags = {
+  'azd-env-name': environmentName
+  'cs-integration-pattern': 'a'
+  'recon-role': 'reference-deployment'
+}
 
 // Organize resources in a resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {

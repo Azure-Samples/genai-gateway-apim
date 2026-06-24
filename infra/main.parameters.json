@@ -11,20 +11,29 @@
     "location": {
       "value": "${AZURE_LOCATION}"
     },
-    "principalId": {
-      "value": "${AZURE_PRINCIPAL_ID}"
-    },
     "openAiLocation": {
       "value": "${AZURE_OPENAI_LOCATION=westeurope}"
     },
     "openAiApiVersion": {
       "value": "${AZURE_OPENAI_API_VERSION=2024-10-21}"
     },
-    "apimLocation": {
-      "value": "${AZURE_APIM_LOCATION=westeurope}"
-    },
     "deployTwoBackends": {
       "value": false
+    },
+    "sharedApimName": {
+      "value": "${SHARED_APIM_NAME}"
+    },
+    "sharedApimResourceGroup": {
+      "value": "${SHARED_APIM_RESOURCE_GROUP}"
+    },
+    "sharedApimPrincipalId": {
+      "value": "${SHARED_APIM_PRINCIPAL_ID}"
+    },
+    "sharedApplicationInsightsName": {
+      "value": "${SHARED_APPLICATION_INSIGHTS_NAME}"
+    },
+    "patternSuffix": {
+      "value": "${PATTERN_SUFFIX=a}"
     }
   }
 }

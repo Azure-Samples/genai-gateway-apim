@@ -14,6 +14,9 @@ param openai2Endpoint string = ''
 @description('When true, also creates backend2 and includes it in the load-balancer pool. When false, the pool contains only backend1.')
 param deployTwoBackends bool = true
 
+@description('Short pattern id (a/b/d). Suffixed onto every APIM child resource name so multiple patterns can share one APIM without collisions.')
+param patternSuffix string
+
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'
 
@@ -21,6 +24,14 @@ param resourceGroupName string = resourceGroup().name
 
 var subscriptionId = az.subscription().subscriptionId
 var apiSuffix = '${apiName}/openai'
+
+// Pattern-unique names for the per-pattern APIM children sharing one instance.
+var backend1Name = 'backend1-${patternSuffix}'
+var backend2Name = 'backend2-${patternSuffix}'
+var loadBalancerName = 'LoadBalancer-${patternSuffix}'
+var productResourceName = '${productName}-${patternSuffix}'
+var userResourceName = 'user-${patternSuffix}'
+var subscriptionResourceName = 'subscriptionAIProduct-${patternSuffix}'
 
 resource apimService 'Microsoft.ApiManagement/service@2023-09-01-preview' existing = {
   name: name
@@ -34,7 +45,7 @@ resource apimLogger 'Microsoft.ApiManagement/service/loggers@2021-12-01-preview'
 // Creating a backend for Cog service account 1, also adding a circuit breaker rule
 resource backend1 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
-  name: 'backend1'
+  name: backend1Name
   properties: {
     url: '${openai1Endpoint}openai'
     protocol: 'http'
@@ -65,7 +76,7 @@ resource backend1 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' 
 // Creating a backend for Cog service account 2, also adding a circuit breaker rule (only when deployTwoBackends)
 resource backend2 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = if (deployTwoBackends) {
   parent: apimService
-  name: 'backend2'
+  name: backend2Name
   properties: {
     url: '${openai2Endpoint}openai'
     protocol: 'http'
@@ -97,7 +108,7 @@ resource backend2 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' 
 // Create a load balancer (pool) for the backends where backend1 and backend2 are added
 resource loadBalancing 'Microsoft.ApiManagement/service/backends@2023-09-01-preview' = {
   parent: apimService
-  name: 'LoadBalancer'
+  name: loadBalancerName
   properties: {
     description: 'Load balancer for multiple backends'
     type: 'Pool'
@@ -161,18 +172,10 @@ resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2020-06-01-pre
   }
 }
 
-// All-APIs (service-level) policy: adds a default `api-version` query param to
-// the request before it's forwarded to the AOAI backend. Paired with the
-// operation overrides below, which drop `?api-version={api-version}` from the
-// imported URL templates so route matching no longer requires it from callers.
-resource globalPolicy 'Microsoft.ApiManagement/service/policies@2023-09-01-preview' = {
-  parent: apimService
-  name: 'policy'
-  properties: {
-    format: 'rawxml'
-    value: loadTextContent('./apim-global-policy.xml')
-  }
-}
+// NOTE: the service-level (all-APIs) "default api-version" global policy is NOT
+// applied here — it is shared across every pattern and is owned by the platform
+// stack (platform/apim-service-policy.bicep). Applying it per-pattern would have
+// each workload clobber the others on the shared APIM.
 
 // Operation URL template overrides for AOAI data-plane passthrough endpoints.
 // The upstream OpenAPI declares every operation as `?api-version={api-version}`,
@@ -210,7 +213,7 @@ resource deploymentOpOverrides 'Microsoft.ApiManagement/service/apis/operations@
 // Creating a product for the API. Products are used to group APIs and apply policies to them
 resource product 'Microsoft.ApiManagement/service/products@2020-06-01-preview' = {
   parent: apimService
-  name: productName
+  name: productResourceName
   properties: {
     displayName: productName
     description: productDescription
@@ -228,7 +231,7 @@ resource productApi1 'Microsoft.ApiManagement/service/products/apis@2020-06-01-p
 // Creating a user for the API Management service
 resource user 'Microsoft.ApiManagement/service/users@2020-06-01-preview' = {
   parent: apimService
-  name: 'userName'
+  name: userResourceName
   properties: {
     firstName: 'User'
     lastName: 'Name'
@@ -241,7 +244,7 @@ resource user 'Microsoft.ApiManagement/service/users@2020-06-01-preview' = {
 // NOTE: the subscription is associated with the user and the product, AND the subscription ID is what will be used in the request to authenticate the calling client
 resource subscription 'Microsoft.ApiManagement/service/subscriptions@2020-06-01-preview' = {
   parent: apimService
-  name: 'subscriptionAIProduct'
+  name: subscriptionResourceName
   properties: {
     displayName: 'Subscribing to AI services'
     state: 'active'

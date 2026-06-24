@@ -15,9 +15,12 @@ param publisherName string = 'n/a'
 @allowed([
   'Consumption'
   'Developer'
+  'Basic'
+  'BasicV2'
   'Standard'
   'StandardV2'
   'Premium'
+  'PremiumV2'
 ])
 param sku string = 'Consumption'
 

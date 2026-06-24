@@ -21,22 +21,37 @@ param resourceGroupName string = ''
 param openAiLocation string // Set in main.parameters.json
 param openAiApiVersion string // Set in main.parameters.json
 
-param apimLocation string // Set in main.parameters.json
-
-param publisherName string = 'myPublisherName'
-param publisherEmail string = 'myPublisherEmail@example.com'
 param apiName string = 'myAPI'
 
 param productName string = 'APIM-AI_APIS'
 param productDescription string = 'A product with AI APIs'
 
-param apimName string = 'APIM8'
-
-@description('When true, deploys two AOAI accounts behind an APIM load-balancer pool. When false, deploys only one AOAI account (the pool still exists but contains a single backend).')
+@description('When true, deploys two AOAI accounts behind the APIM load-balancer pool. When false, deploys only one AOAI account (the pool still exists but contains a single backend).')
 param deployTwoBackends bool = true
+
+// --- Shared platform wiring -------------------------------------------------
+// These come from the platform stack outputs (platform/main.bicep). Set them
+// into the azd env with `azd env set` — platform/deploy.sh prints the commands.
+@description('Name of the shared APIM service this pattern attaches to.')
+param sharedApimName string
+
+@description('Resource group that holds the shared APIM (and shared monitoring).')
+param sharedApimResourceGroup string
+
+@description('System-assigned principalId of the shared APIM. Granted Cognitive Services OpenAI User on this pattern\'s AOAI accounts.')
+param sharedApimPrincipalId string
+
+@description('Name of the shared Application Insights instance (for this pattern\'s per-API diagnostics).')
+param sharedApplicationInsightsName string
+
+@description('Short pattern id (a/b/d). Disambiguates this pattern\'s resources on the shared APIM and tags its spend.')
+param patternSuffix string = 'a'
+// ---------------------------------------------------------------------------
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+// This pattern's API name on the shared APIM must be unique across patterns.
+var patternApiName = '${apiName}-${patternSuffix}'
 // Tagging schema for Azure Cost Management — applies to every resource via
 // the `tags` param threaded through every module.
 //   cs-integration-pattern: a/b/c/d per cs-integration-patterns.html.
@@ -46,15 +61,21 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 // Cost Management aggregates new tag dimensions on an 8-24h delay.
 var tags = {
   'azd-env-name': environmentName
-  'cs-integration-pattern': 'a'
+  'cs-integration-pattern': patternSuffix
   'recon-role': 'reference-deployment'
 }
 
-// Organize resources in a resource group
+// This pattern's own resource group — holds its AOAI accounts + role grant.
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
+}
+
+// Existing shared-platform resource group — the API/backends/policy are created
+// here, as children of the shared APIM, even though AOAI lives in our own RG.
+resource platformResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  name: sharedApimResourceGroup
 }
 
 // FIRST: creating Azure Cognitive Services account for OpenAI
@@ -62,7 +83,7 @@ module openAi1 'core/ai/cognitiveservices.bicep' = {
   name: 'openai1'
   scope: resourceGroup
   params: {
-    name: '${abbrs.cognitiveServicesAccounts}${resourceToken}-${apimName}-AOAI1'
+    name: '${abbrs.cognitiveServicesAccounts}${resourceToken}-${patternSuffix}-AOAI1'
     location: openAiLocation
     tags: tags
     sku: {
@@ -92,7 +113,7 @@ module openAi2 'core/ai/cognitiveservices.bicep' = if (deployTwoBackends) {
   name: 'openai2'
   scope: resourceGroup
   params: {
-    name: '${abbrs.cognitiveServicesAccounts}${resourceToken}-${apimName}-AOAI2'
+    name: '${abbrs.cognitiveServicesAccounts}${resourceToken}-${patternSuffix}-AOAI2'
     location: openAiLocation
     tags: tags
     sku: {
@@ -117,31 +138,16 @@ module openAi2 'core/ai/cognitiveservices.bicep' = if (deployTwoBackends) {
   }
 }
 
-// Create API Management service
-// NOTE: certain features are only available in certain regions, e.g 'westcentralus' for example until this is GA
-module apim 'core/gateway/apim.bicep' = {
-  name: 'apim'
-  scope: resourceGroup
-  params: {
-    name: '${abbrs.apiManagementService}${resourceToken}-${apimName}'
-    location: apimLocation
-    tags: tags
-    sku: 'StandardV2'
-    skuCount: 1
-    publisherEmail: publisherEmail
-    publisherName: publisherName
-    applicationInsightsName: monitoring.outputs.applicationInsightsName
-    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
-  }
-}
-
+// This pattern's API, backends, load balancer, policy, product and subscription,
+// created on the SHARED APIM (hence scope: platformResourceGroup).
 module api 'app/apim-api.bicep' = {
-  name: 'api'
-  scope: resourceGroup
+  name: 'api-${patternSuffix}'
+  scope: platformResourceGroup
   params: {
-    name: apim.outputs.apimServiceName
-    applicationInsightsName: monitoring.outputs.applicationInsightsName
-    apiName: apiName
+    name: sharedApimName
+    applicationInsightsName: sharedApplicationInsightsName
+    apiName: patternApiName
+    patternSuffix: patternSuffix
     productName: productName
     productDescription: productDescription
     deployTwoBackends: deployTwoBackends
@@ -150,45 +156,14 @@ module api 'app/apim-api.bicep' = {
   }
 }
 
-// Monitor application with Azure Monitor
-module monitoring 'core/monitor/monitoring.bicep' = {
-  name: 'monitoring'
+// Grant the shared APIM's managed identity Cognitive Services OpenAI User over
+// this pattern's RG (covers both AOAI accounts — one RG-scoped grant is enough;
+// the previous two-module form produced an identical guid and silently no-op'd).
+module openAiRoleApim 'core/security/role.bicep' = {
   scope: resourceGroup
+  name: 'openai-role-apim-${patternSuffix}'
   params: {
-    location: location
-    tags: tags
-    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
-    applicationInsightsName: '${abbrs.insightsComponents}${resourceToken}'
-    applicationInsightsDashboardName: '${abbrs.portalDashboards}${resourceToken}'
-  }
-}
-
-// Roles
-
-// Assign the role (to Cog service account 1), a role entry is added to Cognitive Services account with the following args: 
-// - roleDefinitionId (Cognitive Service User), 
-// - principalId (APIM service instance) 
-// - scope (Cognitive Services account)
-module openAi1RoleApim 'core/security/role.bicep' = {
-  scope: resourceGroup
-  name: 'openai1-role-apim'
-  params: {
-    principalId: apim.outputs.apimPrincipalId
-    // Cognitive Services OpenAI User
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Assign the role (to Cog service account 2), a role entry is added to Cognitive Services account with the following args: 
-// - roleDefinitionId (Cognitive Service User), 
-// - principalId (APIM service instance) 
-// - scope (Cognitive Services account)
-module openAi2RoleApim 'core/security/role.bicep' = if (deployTwoBackends) {
-  scope: resourceGroup
-  name: 'openai2-role-apim'
-  params: {
-    principalId: apim.outputs.apimPrincipalId
+    principalId: sharedApimPrincipalId
     // Cognitive Services OpenAI User
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
     principalType: 'ServicePrincipal'
@@ -201,6 +176,6 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output DEPLOYMENT_ID string = 'conversation-model'
 output API_VERSION string = openAiApiVersion
-output APIM_ENDPOINT string = 'https://${apim.outputs.apimServiceName}.azure-api.net'
+output APIM_ENDPOINT string = 'https://${sharedApimName}.azure-api.net'
 output API_SUFFIX string = api.outputs.apiSuffix
 output SUBSCRIPTION_KEY string = api.outputs.subscriptionKey

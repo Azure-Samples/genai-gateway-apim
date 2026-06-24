@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${PLATFORM_ENV_NAME=shared-platform}"
+    },
+    "location": {
+      "value": "${PLATFORM_LOCATION=westeurope}"
+    },
+    "apimLocation": {
+      "value": "${PLATFORM_APIM_LOCATION=westeurope}"
+    },
+    "apimSku": {
+      "value": "${PLATFORM_APIM_SKU=BasicV2}"
+    }
+  }
+}

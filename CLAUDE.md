@@ -77,6 +77,18 @@ azd up
 missing"** until those four `SHARED_*` vars are set — that's expected, it means
 the platform hasn't been deployed/wired yet, not a bug.
 
+<!-- 25e1acfc - 25062026 -->
+> **Deploy in progress (KLEAR, pattern a).** The shared platform stack is
+> **already deployed** into KLEAR sub `01b46d81-…` / RG `rg-shared-platform`
+> (Basic v2 APIM `apim-ckelj5onvh22y-SHARED`). The azd env `pl-apimaoai-dev-03`
+> is fully wired (all `SHARED_*` + `AZURE_RESOURCE_GROUP=rg-pl-apimaoai-dev-01` +
+> `PATTERN_SUFFIX=a`). **Only the workload remains:** run
+> `azd auth login --tenant-id 4efadd80-569e-4303-9fe0-eaa91841d112`
+> (interactive — azd auth is separate from `az`), then `azd up`. `azd up` is the
+> first real test of Basic v2 + the load-balancer pool; if it rejects the pool,
+> redeploy the platform with `PLATFORM_APIM_SKU=StandardV2`. Remove this note
+> once the workload is up.
+
 Deploy / tear down (run from repo root):
 ```bash
 azd up                 # ~3-4 min once the shared platform exists (no APIM to create here)

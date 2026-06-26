@@ -43,7 +43,9 @@ az deployment sub create \
 echo "Reading outputs..."
 OUTPUTS=$(az deployment sub show --name "${DEPLOYMENT_NAME}" --query properties.outputs -o json)
 
-get() { echo "${OUTPUTS}" | python3 -c "import sys,json;print(json.load(sys.stdin)['$1']['value'])"; }
+# ARM camel-cases deployment output keys (SHARED_APIM_NAME -> shareD_APIM_NAME),
+# so look up case-insensitively.
+get() { echo "${OUTPUTS}" | python3 -c "import sys,json;d={k.lower():v for k,v in json.load(sys.stdin).items()};print(d['$1'.lower()]['value'])"; }
 
 APIM_NAME=$(get SHARED_APIM_NAME)
 APIM_RG=$(get SHARED_APIM_RESOURCE_GROUP)

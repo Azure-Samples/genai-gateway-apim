@@ -1,0 +1,28 @@
+{
+  "cols": [
+    "PreTaxCost",
+    "ResourceId",
+    "Currency"
+  ],
+  "rows": [
+    [
+      9.9729927945,
+      "/subscriptions/bc5969e8-2fe3-4124-9e69-e4d34052a6ce/resourcegroups/rg-pl-apimaoai-dev-01/providers/microsoft.apimanagement/service/apim-etzy2qm6rsa3u-apim8",
+      "EUR"
+    ],
+    [
+      0.540385919,
+      "/subscriptions/bc5969e8-2fe3-4124-9e69-e4d34052a6ce/resourcegroups/rg-pl-apimaoai-dev-01/providers/microsoft.cognitiveservices/accounts/cog-etzy2qm6rsa3u-apim8-aoai1",
+      "EUR"
+    ],
+    [
+      0.009860735583555,
+      "/subscriptions/bc5969e8-2fe3-4124-9e69-e4d34052a6ce/resourcegroups/rg-pl-apimaoai-dev-01/providers/microsoft.operationalinsights/workspaces/log-etzy2qm6rsa3u",
+      "EUR"
+    ]
+  ]
+}
+
+
+total
+13.8466714490836
